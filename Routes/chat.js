@@ -10,7 +10,11 @@ router.post("/private", async (req, res) => {
   try {
     const UserData = await User.findOne({ email: userId2 });
     if (!UserData)
-      return res.json({ message: "User Not Exist", success: false });
+      return res.json({
+        message: "User Not Exist",
+        success: false,
+        type: "error",
+      });
     let chat = await Chat.findOne({
       isGroup: false,
       members: { $all: [userId, UserData._id] },
@@ -19,6 +23,7 @@ router.post("/private", async (req, res) => {
       return res.json({
         message: "User Already Exist in Chat",
         success: false,
+        type: "error",
       });
     if (!chat) {
       chat = new Chat({ members: [userId, UserData._id] });
@@ -33,10 +38,15 @@ router.post("/private", async (req, res) => {
         ],
         success: true,
       };
-      res.status(200).json(fullChat);
+      res.status(200).json({
+        message: "User Added in chat",
+        type: "success",
+        data: fullChat,
+        success: true,
+      });
     }
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message, type: "error" });
   }
 });
 

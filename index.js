@@ -36,7 +36,6 @@ app.use("/api/chats", verifyToken, chatRoutes);
 app.use("/api/messages", verifyToken, messageRoutes);
 
 io.on("connection", (socket) => socketHandler(socket, io));
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "dist")));
   app.get("/", (req, res) => {

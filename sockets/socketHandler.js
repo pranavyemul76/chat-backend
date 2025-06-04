@@ -9,10 +9,17 @@ export const socketHandler = (socket, io) => {
     io.to(message.chat).emit("receive-message", message);
   });
 
-  socket.on("seen-message", ({ chatId, userId }) => {
-    io.to(chatId).emit("message-seen", { chatId, userId });
+  socket.on("seen-message", ({ chatId, userId, messageId }) => {
+    io.to(chatId).emit("message-seen", { userId, messageId });
   });
 
+  socket.on("typing", ({ chatId, userEmail }) => {
+    socket.to(chatId).emit("typing", { userEmail });
+  });
+
+  socket.on("stop-typing", ({ chatId, userEmail }) => {
+    socket.to(chatId).emit("stop-typing", { userEmail });
+  });
   socket.on("disconnect", () => {
     console.log("❌ Client disconnected:", socket.id);
   });
